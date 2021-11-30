@@ -17,16 +17,17 @@ export class AuthService {
     if (user.password !== dto.password)
       throw new UnauthorizedException('Credentials incorrect');
 
-    return this.signUser(user.id, user.email, 'user');
+    return this.signUser(user.id, user.email, 'user', user.role);
   }
 
-  signUser(userId: number, email: string, type: string) {
+  signUser(userId: number, email: string, type: string, role: string) {
     return {
       success: true,
       access_token: this.jwtService.sign({
         sub: userId,
         email,
         type: type,
+        role,
       }),
     };
   }

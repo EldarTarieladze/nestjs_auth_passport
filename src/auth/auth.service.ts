@@ -10,8 +10,6 @@ export class AuthService {
   constructor(private jwtService: JwtService) {}
 
   signinLocal(dto: AuthDto) {
-    // retrieve user
-    console.log(users.find((rr) => rr));
     const user = users.find((user) => user.email === dto.email);
     if (!user) throw new UnauthorizedException('Credentials incorrect');
     if (user.password !== dto.password)

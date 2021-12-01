@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'guards/role.enum';
 import { RolesGuard } from 'guards/role.guard';
@@ -20,5 +20,11 @@ export class ProtectedController {
   @Get('editor')
   getStudent(): string {
     return 'Hello Editor';
+  }
+  @authRole(Roles.Editor)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Post('test')
+  getPayload(): string {
+    return 'asda';
   }
 }

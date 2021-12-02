@@ -7,11 +7,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 interface Error {
   error: string;
-  message: any;
+  message: string;
 }
 
 export class ValidationException extends BadRequestException {
@@ -29,13 +30,24 @@ export class ValidationFilter implements ExceptionFilter {
     //  err.message.split('-')
     return response.status(400).json({
       statusCode: 400,
-      validationErrors: exception.validationErrors,
+      validationErrors: exception.validationErrors.map((err) => {
+        return { error: err.error, message: err.message.split('-')[0] };
+      }),
     });
   }
 }
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const config = new DocumentBuilder()
+    .setTitle('Cats example')
+    .setDescription('The cats API description')
+    .setVersion('1.0')
+    .addTag('cats')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/swagger', app, document);
+
   app.useGlobalFilters(new ValidationFilter());
   app.useGlobalPipes(
     new ValidationPipe({

@@ -4,12 +4,18 @@ import { Roles } from 'guards/role.enum';
 import { RolesGuard } from 'guards/role.guard';
 import { authRole } from 'decorators/roles.decorator';
 import { ProtectedService } from './protected.service';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('info')
 export class ProtectedController {
   constructor(private readonly protectedService: ProtectedService) {}
-
-  @authRole(Roles.Admin, Roles.Editor)
+  @ApiBearerAuth()
+  @authRole(Roles.Admin)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('admin')
   getStudentInfo(): string {

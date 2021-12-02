@@ -25,7 +25,7 @@ export class ProtectedController {
   getStudent(): string {
     return 'Hello Editor';
   }
-  @authRole(Roles.Editor)
+  // @authRole(Roles.Editor, Roles.Admin)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('user')
   getPayload(@Req() req, @Body() data: any): TTokenPayload {

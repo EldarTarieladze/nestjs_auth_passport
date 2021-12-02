@@ -13,11 +13,11 @@ export class RegistrationService {
       console.log(user);
       const newUser = new this.userModel(user);
       await newUser.save();
-      return 'successfully';
+      return { message: 'User successfully add' };
     } catch (err) {
       console.log(err);
       console.log(err._message);
-      return 'server Error';
+      return { message: 'server Error' };
     }
   }
 }

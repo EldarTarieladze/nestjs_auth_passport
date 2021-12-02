@@ -10,10 +10,5 @@ export class RegDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  role: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
   password: string;
 }

@@ -1,27 +1,33 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'guards/role.enum';
 import { RolesGuard } from 'guards/role.guard';
 import { authRole } from 'decorators/roles.decorator';
 import { ProtectedService } from './protected.service';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { TTokenPayload } from 'interface/tokenPayload.class';
 
 @Controller('info')
+@ApiTags('Protected')
+@ApiBearerAuth('access-token')
 export class ProtectedController {
   constructor(private readonly protectedService: ProtectedService) {}
-  @ApiBearerAuth()
-  @authRole(Roles.Admin)
+  @authRole(Roles.Admin, Roles.Editor)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('admin')
   getStudentInfo(): string {
     return this.protectedService.getStudentInfo();
   }
-  @authRole(Roles.Editor)
+
+  @authRole(Roles.Admin)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('editor')
   getStudent(): string {
@@ -29,8 +35,9 @@ export class ProtectedController {
   }
   @authRole(Roles.Editor)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Post('test')
-  getPayload(): string {
-    return 'asda';
+  @Get('user')
+  getPayload(@Req() req, @Body() data: any): TTokenPayload {
+    console.log(req.user, data);
+    return req.user;
   }
 }

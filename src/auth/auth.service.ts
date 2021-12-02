@@ -16,21 +16,21 @@ export class AuthService {
   ) {}
 
   async signinLocal(dto: AuthDto) {
-    const user = await this.userModel.findOne(
-      (user) => user.email === dto.email,
-    );
+    console.log(dto);
+    const user = await this.userModel.findOne({ email: dto.email });
+    console.log(user);
     if (!user) throw new UnauthorizedException('Credentials incorrect');
     if (user.password !== dto.password)
       throw new UnauthorizedException('Credentials incorrect');
 
-    return this.signUser(user._id, user.email, 'user', user.role);
+    return this.signUser(user._id, user.email, user.role);
   }
 
-  signUser(userId: string, email: string, type: string, role: string) {
+  signUser(userID: string, email: string, role: string) {
     return {
       success: true,
       access_token: this.jwtService.sign({
-        sub: userId,
+        userID,
         email,
         role,
       }),

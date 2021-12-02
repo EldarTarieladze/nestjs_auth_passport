@@ -1,9 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { RegDto } from 'dto/registration.dto';
 import { RegistrationService } from './registration.service';
 
 @Controller('registration')
+@ApiTags('Registration')
 export class RegistrationController {
   constructor(private readonly registraitonService: RegistrationService) {}
   @Post()

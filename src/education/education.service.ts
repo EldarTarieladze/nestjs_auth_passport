@@ -1,14 +1,16 @@
 import {
   BadRequestException,
-  HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { validate } from 'class-validator';
 import { EducationDto } from 'dto/education.dto';
 import { IUserEducation } from 'models/education.model';
 import { IUser } from 'models/user.model';
 import { Model } from 'mongoose';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class EducationService {
@@ -20,7 +22,22 @@ export class EducationService {
   ) {}
 
   async getEducationInfo(educationID: string) {
-    return await this.educationModel.findById(educationID).select('-_id -__v');
+    try {
+      const education = await this.educationModel
+        .findById(educationID)
+        .select('-_id -__v');
+
+      if (!education)
+        throw new NotFoundException({
+          description: 'education not found',
+        });
+      return education;
+    } catch (err) {
+      console.log(err.reason);
+      throw new InternalServerErrorException({
+        description: 'Server Error please try again',
+      });
+    }
   }
 
   async addEducationInfo(userID: string, education: EducationDto) {
@@ -35,6 +52,10 @@ export class EducationService {
           },
         },
       );
+      if (!addEduciatonToUser)
+        throw new NotFoundException({
+          description: "education didn't updated",
+        });
       await newEducation.save();
       return 'education add successfully';
     } catch (err) {

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Req,
@@ -18,6 +19,11 @@ import { RolesGuard } from 'guards/role.guard';
 import { IUserEducation } from 'models/education.model';
 import { EducationService } from './education.service';
 
+class InotFoundError {
+  objectOrError?: any;
+  description: string;
+}
+
 @Controller('education')
 @ApiTags('Education')
 export class EducationController {
@@ -29,8 +35,8 @@ export class EducationController {
 
   @Get('/:educationID')
   async getEducationInfo(
-    @Param('educationID') educationID: string,
-  ): Promise<IUserEducation> {
+    @Param('educationID', ParseUUIDPipe) educationID: string,
+  ): Promise<IUserEducation | InotFoundError> {
     return await this.educationService.getEducationInfo(educationID);
   }
   //   @authRole(Roles.Admin)

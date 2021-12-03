@@ -13,6 +13,10 @@ export const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  education: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'educations',
+  },
 });
 
 export interface IUser extends mongoose.Document {

@@ -6,7 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RegistrationController } from './registration/registration.controller';
+import { EducationModule } from './education/education.module';
 
 @Module({
   imports: [
@@ -15,6 +15,7 @@ import { RegistrationController } from './registration/registration.controller';
     MongooseModule.forRoot(process.env.MONGO_STRING),
     ProtectedModule,
     AuthModule,
+    EducationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

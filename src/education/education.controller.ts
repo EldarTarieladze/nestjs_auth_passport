@@ -28,18 +28,22 @@ class InotFoundError {
 @ApiTags('Education')
 export class EducationController {
   constructor(private readonly educationService: EducationService) {}
-  @Get()
-  healthyCheck(): string {
-    return 'healthy Check';
-  }
 
+  @ApiBearerAuth('access-token')
   @Get('/:educationID')
   async getEducationInfo(
     @Param('educationID', ParseUUIDPipe) educationID: string,
   ): Promise<IUserEducation | InotFoundError> {
     return await this.educationService.getEducationInfo(educationID);
   }
-  //   @authRole(Roles.Admin)
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Get()
+  async findEducations(@Req() req): Promise<any> {
+    return await this.educationService.findEducations(req.user.userID);
+  }
+
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post()
@@ -52,7 +56,8 @@ export class EducationController {
       education,
     );
   }
-
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put('/:educationID')
   async updateEducationInfo(
     @Param('educationID') educationID: string,
@@ -64,6 +69,7 @@ export class EducationController {
     );
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('/:educationID')
   async deleteEducationInfo(
     @Param('educationID') educataionID: string,

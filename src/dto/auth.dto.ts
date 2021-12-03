@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthDto {
   @ApiProperty({
-    default: 'tarieladze@gmail.com',
+    default: 'tarieladze99@yahoo.com',
   })
   email: string;
 

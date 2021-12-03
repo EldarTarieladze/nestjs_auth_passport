@@ -3,14 +3,13 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { validate } from 'class-validator';
 import { EducationDto } from 'dto/education.dto';
 import { IUserEducation } from 'models/education.model';
 import { IUser } from 'models/user.model';
 import { Model } from 'mongoose';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class EducationService {
@@ -20,6 +19,22 @@ export class EducationService {
     @InjectModel('users')
     private readonly userModel: Model<IUser>,
   ) {}
+
+  async findEducations(userID: string) {
+    this.userModel
+      .findById(userID)
+      .populate('education')
+      .exec((err, doc) => {
+        console.log(doc);
+      });
+    const userEducations = await this.userModel
+      .findById(userID)
+      .populate('education');
+
+    console.log(userEducations);
+    if (!userEducations) throw new UnauthorizedException();
+    return userEducations;
+  }
 
   async getEducationInfo(educationID: string) {
     try {
